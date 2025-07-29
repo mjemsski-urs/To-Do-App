@@ -1,77 +1,69 @@
-from flask import Flask, render_template, request, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
+# Import necessary modules and classes from Flask and other packages
+from flask import Flask, render_template, request, redirect, url_for, session, flash, abort
+from flask_cors import CORS
+from flasgger import Swagger
+from models import db, User, Task
+from api.routes import api 
 import os
-
+from datetime import datetime
 
 app = Flask(__name__)
+app.secret_key = "secret123"
+CORS(app)
 
-# configuring database (SQLite)
-baseDir = os.path.abspath(os.path.dirname(__file__))
-db_path = os.path.join(baseDir, "database.db")
-
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + db_path
+# ====== Database Config ======
+base_dir = os.path.abspath(os.path.dirname(__file__))
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(base_dir, "database.db")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-db = SQLAlchemy(app)
+# ====== Initialize Extensions ======
+db.init_app(app)
+swagger = Swagger(app)
 
+# ====== Register Blueprints ======
+app.register_blueprint(api)
 
-# define Task model
-class Task(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
-    is_done = db.Column(db.Boolean, default=False)
+# ====== Traditional HTML Routes ======
 
-    def __repr__(self):
-        return f"<Task {self.title}>"
-
-
-# home route - shows all tasks
 @app.route("/")
 def index():
-    tasks = Task.query.all()
+    return render_template("index.html")
 
-    return render_template("index.html", tasks=tasks)
-
-
-# add new task
-@app.route("/add", methods=["POST"])
-def add():
-    title = request.form.get("title")
-
-    if title:
-        new_task = Task(title=title)
-
-        db.session.add(new_task)
-        db.session.commit()
-
-    return redirect(url_for("index"))
+@app.route("/signup", methods=["GET"])
+def signup():
+    return render_template("signup.html")
 
 
-# mark task as done
-@app.route("/done/<int:id>")
-def done(id):
-    task = Task.query.get_or_404(id)
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    return render_template("index.html")
 
-    task.is_done = not task.is_done
+@app.route("/home")
+def home():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
 
-    db.session.commit()
+    user_id = session["user_id"]
+    user_name = session.get("user_name", "User")  
 
-    return redirect(url_for("index"))
+    tasks = Task.query.filter_by(user_id=user_id).all()
+
+    return render_template(
+        "home.html",
+        tasks=tasks,
+        name=user_name,
+        current_year=datetime.now().year
+    )
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    flash("Logged out successfully.", "info")
+    return redirect(url_for("login"))
 
 
-# delete task
-@app.route("/delete/<int:id>")
-def delete(id):
-    task = Task.query.get_or_404(id)
-
-    db.session.delete(task)
-    db.session.commit()
-
-    return redirect(url_for("index"))
-
-
+# ====== Run Server ======
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-
     app.run(debug=True)
