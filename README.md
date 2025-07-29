@@ -1,37 +1,36 @@
-# 📝 To-Do List Web App using Flask
+# 📝 To-Do List Web App using Flask + REST API
 
-This is a simple and visually appealing **To-Do List web application** built with **Python**, **Flask**, **SQLite**, and **Bootstrap**. It allows users to add tasks, mark them as complete or incomplete, and delete them — all with a clean and responsive interface.
+This is a full-featured **To-Do List Web Application** built with **Python**, **Flask**, **SQLite**, and **Bootstrap**, enhanced with a **RESTful API**. It supports both a traditional web interface and API endpoints for managing users and tasks. Users can register, log in, and manage tasks from the browser or via HTTP requests.
 
 ---
 
 ## 🚀 Features
 
-- ✅ Add new tasks
-- 🔄 Toggle task status (complete/incomplete)
-- 🗑️ Delete tasks with confirmation
-- 🧠 Stores data using SQLite and SQLAlchemy ORM
-- 🎨 Clean UI built with Bootstrap
-- 📱 Responsive design, works on mobile too
-
----
-
-## 📸 Preview
-
-![App Screenshot](https://github.com/udham2511/todo-app/blob/main/preview.gif)
+- ✅ User Registration and Login
+- ✅ Add, Edit, and Delete Tasks
+- 🔄 Toggle Task Completion Status
+- 🔐 Session Management with Flask
+- 🌐 REST API with JSON Support
+- 📊 Swagger UI for API Documentation
+- 🧪 Automated Testing with Pytest + Coverage
+- 🎨 Responsive UI with Bootstrap
+- 🧠 SQLite Database with SQLAlchemy ORM
 
 ---
 
 ## 📦 Tech Stack
 
-| Technology     | Purpose                    |
-|----------------|----------------------------|
-| Python         | Backend language           |
-| Flask          | Web framework              |
-| SQLAlchemy     | Database ORM               |
-| SQLite         | Lightweight local database |
-| HTML/CSS       | UI Structure & Styling     |
-| Bootstrap      | Responsive layout          |
-| JavaScript     | Confirmation before delete |
+| Technology     | Description                       |
+|----------------|-----------------------------------|
+| Python         | Backend Programming Language       |
+| Flask          | Lightweight Web Framework          |
+| SQLAlchemy     | ORM for Database Interaction       |
+| SQLite         | Embedded Local Database            |
+| HTML/CSS       | Frontend Structure & Styling       |
+| Bootstrap      | Responsive Design Framework        |
+| JavaScript     | UI Behavior Enhancements           |
+| Flasgger       | Swagger UI for API Docs            |
+| Pytest         | Testing Framework                  |
 
 ---
 
@@ -59,10 +58,20 @@ python app.py
 Open your browser and go to:
 👉 http://localhost:5000
 
+---
 
-## 👨‍💻 Authors
+## Run Tests
 
-- [@udham2511](https://www.github.com/udham2511)
+- Unit tests for the API are included in tests/test_api.py. Use pytest to run them and measure test coverage:
 
-📬 Connect with me on LinkedIn
-- [@udham2511](https://www.linkedin.com/in/udham2511/)
+```bash
+pytest tests --cov=api --cov-report=term-missing
+```
+
+This command will:
+
+- Run all test cases
+- Show coverage percentage
+- Highlight which lines of code are untested
+
+---
